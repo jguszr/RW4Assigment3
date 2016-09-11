@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "\nnum_helper <- function(data, col_num, state, num) {\n  \n  state_subset <- data[data[, 7]==state, ]\n  outcome_arr <- state_subset[, col_num]\n  len <- dim(state_subset[!is.na(outcome_arr), ])[1]\n  \n  if (num == \"worst\") {\n    rank <- rank_helper(state_subset, outcome_arr, len)\n  } else if (num > len) {\n    rank <- NA\n  } else {\n    rank <- rank_helper(state_subset, outcome_arr, num)\n  }\n  return(rank)\n}\n\nrank_helper <- function(state_subset, outcome_arr, num) {\n  result <- state_subset[, 2][order(outcome_arr, state_subset[, 2])[num]]\n  return(result)\n}\n\nrankhospital <- function(state, outcome, num = \"best\") {\n\n  data <- read.csv(\"outcome-of-care-measures.csv\", colClasses=\"character\")\n  data[, 11] <- as.numeric(data[, 11]) # heart attack\n  data[, 17] <- as.numeric(data[, 17]) # heart failure\n  data[, 23] <- as.numeric(data[, 23]) # pneumonia\n  \n  valid_outcomes <- c(\"heart attack\", \"heart failure\", \"pneumonia\")\n  \n  if (!state %in% data$State) {\n    stop(\"invalid state\")\n  } else if(!outcome %in% valid_outcomes) {\n    stop(\"invalid outcome\")\n  } else {\n    if (num == \"best\") {\n      rank <- beast(state, outcome)\n    } else {\n      if(outcome == \"heart attack\") {\n        rank <- num_helper(data, 11, state, num) \n      } else if(outcome == \"heart failure\") {\n        rank <- num_helper(data, 17, state, num) \n      } else {\n        rank <- num_helper(data, 23, state, num) \n      }\n    }\n    rank\n  }\n}\n",
+    "created" : 1473626887939.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3079704484",
+    "id" : "945890F8",
+    "lastKnownWriteTime" : 1473627564,
+    "last_content_update" : 1473627571993,
+    "path" : "~/coursera/datasciencecoursera/RW4Assigment3/hankhospital.R",
+    "project_path" : "hankhospital.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
