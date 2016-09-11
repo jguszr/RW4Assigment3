@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "\n# assert the column number based on the informed outcome parameter or stop the function \n# also used to make the hankHospital more readable \nassertColNumber <- function(outcome) {\n  switch(outcome, \"heart attack\" = {\n    col = 11\n  }, \"heart failure\" = {\n    col = 17\n  }, \"pneumonia\" = {\n    col = 23\n  }, stop(\"invalid outcome\"))\n  \n  return(col)\n  \n}\n\n\nrankall <- function(outcome, num = \"best\") {\n  data <- read.csv(\"outcome-of-care-measures.csv\", colClasses = \"character\")\n  data <- na.omit(data)\n  states = unique(data[, 7])\n  col = assertColNumber(outcome)\n  data[, col] = as.numeric(data[, col])\n  data = na.omit(data[, c(2, 7, col)] ) \n\n  \n  rank_in_state <- function(state) {\n    df = data[data[, 2] == state, ]\n    hospCount = nrow(df)\n    switch(num, best = {\n      num = 1\n    }, worst = {\n      num = hospCount\n    })\n    if (num > hospCount) {\n      result = NA\n    }\n    c(df[order(df[, 3], df[, 1]), ][num, 1], state)\n  }\n  \n  \n  output = do.call(rbind, lapply(states, rank_in_state))\n  output = output[order(output[, 2]), ]\n  rownames(output) = output[, 2]\n  colnames(output) = c(\"hospital\", \"state\")\n  data.frame(output)\n}",
+    "created" : 1473631495082.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "189030057",
+    "id" : "103EB405",
+    "lastKnownWriteTime" : 1473633023,
+    "last_content_update" : 1473633048278,
+    "path" : "~/coursera/datasciencecoursera/RW4Assigment3/hankall.R",
+    "project_path" : "hankall.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
