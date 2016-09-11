@@ -1,11 +1,15 @@
 
+
+# Helper function used to manipulate the dataframe based on the state, and the 
+#desired output.
 helper <- function(data, colNum, state) {
   stateSubset <- data[data[, 7]==state, ]
   outcomeArr <- stateSubset[, colNum]
   return(stateSubset[which(outcomeArr == min(outcomeArr, na.rm=T)), 2])
 }
 
-
+# Assert function used to validate the informed inputs.
+# used just to make the code more readable.
 assertInputs <- function(data,state,outcome) {
 
   if (!state %in% data$State) {
@@ -17,12 +21,26 @@ assertInputs <- function(data,state,outcome) {
   return(TRUE)
 }
 
+# Another helper function used to make the main function (best) more readable
+# it returns the founded hospital name.
+assertHospitalName<- function(outcome,dt,state) {
+  
+  hosp_name <- "invalid"
+  if(outcome == "heart attack") {
+    hosp_name <- helper(dt, 11, state)
+  } else if(outcome == "heart failure") {
+    hosp_name <- helper(dt, 17, state)
+  } else {
+    hosp_name <- helper(dt, 23, state)
+  }
+  
+  return(hosp_name)  
+}
 
-
+# Main function for the best exercise, it reads the indicated CVS, prepares it, assert the paramenters
+# and filter the outcomes based on the inputed values.
 best<- function(state,outcome) {
   
-  hosp_name <- "Not Found"
-
   dt <- read.csv("outcome-of-care-measures.csv",header=TRUE) 
   dt[, 11] <- as.numeric(dt[, 11]) # heart attack
   dt[, 17] <- as.numeric(dt[, 17]) # heart failure
@@ -34,14 +52,6 @@ best<- function(state,outcome) {
     return("Not valid stuff")
   }
 
-  if(outcome == "heart attack") {
-    hosp_name <- helper(dt, 11, state)
-  } else if(outcome == "heart failure") {
-    hosp_name <- helper(dt, 17, state)
-  } else {
-    hosp_name <- helper(dt, 23, state)
-  }
-  
-  return(hosp_name[1])
+  return(assertHospitalName(outcome,dt,state))
 
 }
